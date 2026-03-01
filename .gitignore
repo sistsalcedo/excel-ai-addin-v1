@@ -1,0 +1,39 @@
+# Dependencias
+node_modules/
+
+# Build / salida
+dist/
+build/
+*.tsbuildinfo
+
+# Variables de entorno (claves API, secretos)
+.env
+.env.local
+.env.*.local
+
+# Logs y caché
+*.log
+npm-debug.log*
+.vite/
+.cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Office Add-in
+*.xlsx
+*.xlsm
+
+# Vercel
+.vercel/
