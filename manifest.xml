@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Copia este archivo como manifest.xml y reemplaza TU-DOMINIO.vercel.app por tu URL de Vercel (ej: ia-en-excel.vercel.app) -->
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
@@ -9,18 +10,17 @@
   <DefaultLocale>es-ES</DefaultLocale>
   <DisplayName DefaultValue="IA en Excel" />
   <Description DefaultValue="Complemento de IA para Excel con modelos de GROQ y OpenRouter." />
-  <IconUrl DefaultValue="http://localhost:5173/assets/icon-32.png" />
-  <HighResolutionIconUrl DefaultValue="http://localhost:5173/assets/icon-80.png" />
-  <SupportUrl DefaultValue="https://localhost" />
+  <IconUrl DefaultValue="https://excel-ai-addin-v1.vercel.app/assets/icon-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://excel-ai-addin-v1.vercel.app/assets/icon-80.png" />
+  <SupportUrl DefaultValue="https://github.com/miltonsalcedo/ia-en-excel" />
   <AppDomains>
-    <AppDomain>http://localhost:5173</AppDomain>
+    <AppDomain>https://excel-ai-addin-v1.vercel.app</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook" />
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="http://localhost:5173/index.html" />
+    <SourceLocation DefaultValue="https://excel-ai-addin-v1.vercel.app/index.html" />
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
 </OfficeApp>
-

@@ -114,6 +114,14 @@ git push -u origin main
 
 No subas `.env` (claves API). Usa `.env.example` como plantilla.
 
+## UI
+
+La interfaz de chat utiliza **Tailwind CSS v4** con un diseño inspirado en assistant-ui minimal:
+- Chat estilo ChatGPT con burbujas de mensajes
+- Sugerencias rápidas al iniciar
+- Selector de proveedor (GROQ/OpenRouter) y modelo
+- Vista previa de acciones sugeridas por la IA
+
 ## Objetivos
 
 - [x] Complemento de Excel (Office Add-in) con panel lateral (task pane)
