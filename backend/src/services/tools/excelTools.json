@@ -1,0 +1,50 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "updateRangeValues",
+      "description": "Insertar datos en un rango de Excel. Devuelve objeto JSON plano con targetRangeAddress y values en el primer nivel. Ejemplo: {\"targetRangeAddress\":\"A1:H51\",\"values\":[[\"A\",\"B\"],[1,2]]}. NO uses la clave properties.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "targetRangeAddress": {"type": "string", "description": "Rango Excel, ej: A1:H51"},
+          "values": {"type": "array", "description": "Array 2D de filas", "items": {"type": "array"}},
+          "actionDescription": {"type": "string", "description": "Descripción breve"}
+        },
+        "required": ["targetRangeAddress", "values"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "setFormula",
+      "description": "Insertar fórmula en Excel. Devuelve objeto JSON plano: {\"targetRangeAddress\":\"B52\",\"formula\":\"SUM(B2:B51)\"}. NO uses properties.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "targetRangeAddress": {"type": "string", "description": "Celda, ej: B52"},
+          "formula": {"type": "string", "description": "Fórmula Excel"},
+          "actionDescription": {"type": "string", "description": "Descripción breve"}
+        },
+        "required": ["targetRangeAddress", "formula"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "createChart",
+      "description": "Crear gráfico en Excel. Devuelve objeto JSON plano: {\"targetRangeAddress\":\"A1:F51\",\"chartType\":\"ColumnClustered\"}. NO uses properties.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "targetRangeAddress": {"type": "string", "description": "Rango de datos"},
+          "chartType": {"type": "string", "enum": ["ColumnClustered", "Line", "Pie", "BarClustered", "Area", "Scatter"], "description": "Tipo de gráfico"},
+          "actionDescription": {"type": "string", "description": "Descripción breve"}
+        },
+        "required": ["targetRangeAddress", "chartType"]
+      }
+    }
+  }
+]

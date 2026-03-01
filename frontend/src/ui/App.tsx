@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   ProviderId,
   AiResponse,
+  AiAction,
   ChatMessage,
 } from "../../../shared/aiContracts";
 import { sendChatRequest } from "../utils/aiGatewayClient";
@@ -21,9 +22,9 @@ const PROVIDER_LABELS: Record<ProviderId, string> = {
 
 const SUGGESTIONS = [
   "Explica los datos seleccionados",
+  "Crea una tabla de ventas de 50 filas e insértala",
   "Genera una fórmula para sumar la columna A",
   "Crea un gráfico con los datos seleccionados",
-  "Sugiere mejoras para el modelo de datos",
 ];
 
 export const App: React.FC = () => {
@@ -32,6 +33,8 @@ export const App: React.FC = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [lastResponse, setLastResponse] = useState<AiResponse | null>(null);
+  const [pendingActions, setPendingActions] = useState<AiAction[] | null>(null);
+  const [applyError, setApplyError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -53,6 +56,7 @@ export const App: React.FC = () => {
     setMessages(newMessages);
     setInput("");
     setError(null);
+    setApplyError(null);
     setIsLoading(true);
 
     try {
@@ -80,13 +84,33 @@ export const App: React.FC = () => {
       }
 
       if (response.actions && response.actions.length > 0) {
-        await applyActions(response.actions);
+        setPendingActions(response.actions);
+      } else {
+        setPendingActions(null);
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Error al llamar al backend de IA");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleApplyActions = async () => {
+    if (!pendingActions?.length) return;
+    setApplyError(null);
+    try {
+      await applyActions(pendingActions);
+      setPendingActions(null);
+    } catch (e: unknown) {
+      setApplyError(
+        e instanceof Error ? e.message : "No se pudo aplicar en la hoja",
+      );
+    }
+  };
+
+  const handleCancelActions = () => {
+    setPendingActions(null);
+    setApplyError(null);
   };
 
   return (
@@ -159,10 +183,10 @@ export const App: React.FC = () => {
               >
                 <div
                   className={
-                  m.role === "user"
-                    ? "max-w-[90%] rounded-lg bg-slate-800 px-3 py-2 text-white"
-                    : "max-w-[90%] rounded-lg bg-slate-100 px-3 py-2 text-slate-900"
-                }
+                    m.role === "user"
+                      ? "max-w-[90%] rounded-lg bg-slate-800 px-3 py-2 text-white"
+                      : "max-w-[90%] rounded-lg bg-slate-100 px-3 py-2 text-slate-900"
+                  }
                 >
                   <span className="mb-0.5 block text-[10px] font-medium opacity-80">
                     {m.role === "user" ? "Tú" : "IA"}
@@ -186,24 +210,55 @@ export const App: React.FC = () => {
         )}
       </section>
 
-      {/* Actions preview */}
-      {lastResponse?.actions && lastResponse.actions.length > 0 && (
-        <section className="shrink-0 border-t border-slate-200 bg-slate-50 px-3 py-2">
-          <p className="mb-1.5 text-xs font-medium text-slate-500">
-            Acciones sugeridas
+      {/* Pending actions – confirmación antes de insertar */}
+      {pendingActions && pendingActions.length > 0 && (
+        <section className="shrink-0 border-t border-slate-200 bg-amber-50 px-3 py-2">
+          <p className="mb-1.5 text-xs font-medium text-slate-700">
+            La IA sugiere insertar estos datos en la hoja. ¿Aplicar?
           </p>
-          <ul className="space-y-0.5 text-xs text-slate-800">
-            {lastResponse.actions.map((a, idx) => (
+          <ul className="mb-2 space-y-0.5 text-xs text-slate-800">
+            {pendingActions.map((a, idx) => (
               <li key={idx} className="flex items-center gap-1.5">
                 <span className="size-1 rounded-full bg-slate-600" />
                 {a.description ?? a.type}
+                {a.targetRangeAddress && (
+                  <span className="text-slate-500">→ {a.targetRangeAddress}</span>
+                )}
               </li>
             ))}
           </ul>
+          {applyError && (
+            <p className="mb-2 text-xs text-red-600">{applyError}</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleApplyActions}
+              className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-700"
+            >
+              Aplicar
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelActions}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50"
+            >
+              Cancelar
+            </button>
+            {applyError && (
+              <button
+                type="button"
+                onClick={handleApplyActions}
+                className="rounded-lg border border-amber-500 px-3 py-1.5 text-xs text-amber-700 hover:bg-amber-100"
+              >
+                Reintentar
+              </button>
+            )}
+          </div>
         </section>
       )}
 
-      {/* Error */}
+      {/* Error de API */}
       {error && (
         <div className="shrink-0 border-t border-red-200 bg-red-50 px-3 py-2">
           <p className="text-xs text-red-600">{error}</p>

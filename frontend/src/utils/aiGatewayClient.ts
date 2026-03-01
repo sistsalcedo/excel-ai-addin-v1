@@ -17,9 +17,15 @@ export async function sendChatRequest(
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `Error al llamar al backend de IA (${response.status}): ${text}`,
-    );
+    let msg = `Error al llamar al backend de IA (${response.status})`;
+    try {
+      const body = JSON.parse(text) as { error?: string; detail?: string };
+      if (body.detail) msg = `${body.error ?? msg}: ${body.detail}`;
+      else if (body.error) msg = body.error;
+    } catch {
+      if (text) msg += `: ${text}`;
+    }
+    throw new Error(msg);
   }
 
   const json = (await response.json()) as AiResponse;

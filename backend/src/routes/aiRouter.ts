@@ -8,9 +8,14 @@ aiRouter.post("/chat", async (req, res) => {
     const response = await handleChat(req.body);
     res.json(response);
   } catch (error) {
+    const msg = error instanceof Error ? error.message : "Error desconocido";
+    const stack = error instanceof Error ? error.stack : undefined;
     // eslint-disable-next-line no-console
-    console.error("Error en /api/ai/chat", error);
-    res.status(500).json({ error: "Error interno en el gateway de IA" });
+    console.error("[aiRouter] /api/ai/chat failed:", { message: msg, stack });
+    res.status(500).json({
+      error: "Error interno en el gateway de IA",
+      detail: process.env.NODE_ENV !== "production" ? msg : undefined,
+    });
   }
 });
 

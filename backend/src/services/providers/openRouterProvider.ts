@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import {
   AiRequest,
   AiResponse,
@@ -10,7 +9,10 @@ export function getOpenRouterProvider(): LLMProvider {
     id: "openrouter",
     async call(request: AiRequest): Promise<AiResponse> {
       const apiKey = process.env.OPENROUTER_API_KEY;
-      const model = request.modelId || process.env.OPENROUTER_MODEL;
+      const model =
+        request.modelId && request.modelId !== "default"
+          ? request.modelId
+          : process.env.OPENROUTER_MODEL;
 
       if (!apiKey) {
         throw new Error(

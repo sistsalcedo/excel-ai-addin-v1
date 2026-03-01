@@ -18,7 +18,11 @@ export interface ExcelRangeSummary {
 
 export interface ExcelContext {
   selection?: ExcelRangeSummary;
-  // Se pueden añadir otros campos en versiones futuras.
+  /** Tabla completa del rango usado (encabezados + filas, hasta ~300 filas) para consultas tipo "producto19" */
+  usedRange?: ExcelRangeSummary;
+  activeCellAddress?: string;
+  activeSheetName?: string;
+  usedRangeAddress?: string;
   [key: string]: unknown;
 }
 

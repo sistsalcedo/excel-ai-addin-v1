@@ -37,3 +37,7 @@ coverage/
 
 # Vercel
 .vercel/
+
+# Planes de implementación (documentación interna)
+docs/PLAN-IMPLEMENTACION-EXCEL.md
+docs/CHECKLIST-IMPLEMENTACION.md
